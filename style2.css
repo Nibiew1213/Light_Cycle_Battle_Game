@@ -1,0 +1,17 @@
+h1 {
+    color: #D5FFFF;
+
+}
+
+body {
+    background: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;   
+}
+
+ canvas {
+    border: #A1C5BA solid;
+
+}
