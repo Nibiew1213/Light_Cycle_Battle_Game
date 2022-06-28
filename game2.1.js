@@ -1,5 +1,7 @@
 const canvas = document.getElementById('arena')
 const context = canvas.getContext('2d')
+const startBtn = document.querySelector('.start')
+startBtn.addEventListener('click', startGame)
 
 class player1Trail{
     constructor(x, y) {
@@ -17,10 +19,10 @@ class player2Trail{
 
 let speed = 15
 let gridCount = 25
-let gridSize = canvas.width / gridCount && canvas.height / gridCount  
+let gridSize =  canvas.width / gridCount && canvas.height / gridCount
 
-let player1X = 1 // player 1 starting position
-let player1Y = 3
+let player1X = 1  // player 1 starting position
+let player1Y = 3 
 
 let player2X = 23 // player 2 starting position
 let player2Y = 21
@@ -33,6 +35,9 @@ let player2VelocityY = 0
 
 const p1Trail = []
 const p2Trail = []
+
+let player1Lives = 5
+let player2Lives = 5
 
 
 // game loop
@@ -47,6 +52,7 @@ function drawGame() {
     drawPlayer1()
     drawPlayer2()
     setTimeout(drawGame, 1000/ speed)
+    
 }
 
 function isGameOver() {
@@ -59,7 +65,6 @@ function isGameOver() {
     if (player2VelocityX === 0 && player2VelocityY === 0){
         return false
     }
-    
 
     if (player1X < 0 || player1X === gridCount || player1Y < 0 || player1Y === gridCount) {
         gameOver = true
@@ -145,6 +150,7 @@ function changeP2Direction() {
 document.body.addEventListener('keydown', player1KeyDown)
 document.body.addEventListener('keydown', player2KeyDown)
 
+
 function player1KeyDown(event) {
     if(event.keyCode == 87 && player1VelocityY != 1) { 
         player1VelocityX = 0
@@ -183,5 +189,10 @@ function player2KeyDown(e) { //input direction for player 2
         player2VelocityY = 0
     }
 }
-
+function startGame () {
+    player1VelocityX += 1
+    player2VelocityX -= 1
+}
 drawGame()
+
+

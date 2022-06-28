@@ -36,7 +36,7 @@ window.onload = function() {
   document.addEventListener("keydown", P1ChangeDirection) // when player1 press the keys
   document.addEventListener("keydown", P2ChangeDirection) // when player2 press the keys
   // update()
-setInterval(update, 1000 / 25)
+setInterval(update, 5000)
 }
 
 function update() {
@@ -51,8 +51,7 @@ function update() {
     drawPlayer1()
     drawPlayer2()
     isGameOver()
-   
- 
+    console.log(player1Trail);
 }
  
   //--------player 1---------
@@ -114,13 +113,14 @@ if (player2X < 0 || player2X > cols*blockSize || player2Y < 0 || player2Y > rows
 }
 }
 
+
 // Game over conditions when either player hits trails
-// for (let i = 0; i < player1Trail.length; i++) {
-//     if (player1X == player1Trail[i][0] && player1Y == player1Trail[i][1]) {
-//         gameOver = true
-//         alert("Game Over Player 2 Wins")
-//     }
-// }
+for (let i = 0; i < player1Trail.length; i++) {
+    if (player1X == player1Trail[i][0] && player1Y == player1Trail[i][1]) {
+        gameOver = true
+        alert("Game Over Player 2 Wins")
+    }
+}
 
 
 
