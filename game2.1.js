@@ -4,14 +4,14 @@ const startBtn = document.querySelector(".start")
 startBtn.addEventListener("click", startGame)
 
 let speed = 10
-let gridCount = 30
+let gridCount = 40
 let gridSize = canvas.width / gridCount && canvas.height / gridCount
 
 let player1X = 1 // player 1 starting position
 let player1Y = 3
 
-let player2X = 28 // player 2 starting position
-let player2Y = 26
+let player2X = 38 // player 2 starting position
+let player2Y = 36
 
 let player1VelocityX = 0
 let player1VelocityY = 0
@@ -51,14 +51,15 @@ function drawGame() {
   drawPlayer1()
   drawPlayer2()
   setTimeout(drawGame, 1000 / speed)
+  setTimeout(bothDie, 100)
 }
 
 function startGame() {
   player1X = 1 // player 1 starting position
   player1Y = 3
 
-  player2X = 28 // player 2 starting position
-  player2Y = 26
+  player2X = 38 // player 2 starting position
+  player2Y = 36
 
   p1Trail = []
   p2Trail = []
@@ -83,6 +84,7 @@ function changeP2Direction() {
 function isGameOver() {
   let gameOver = false
 
+  // prevents game over during start of game
   if (player1VelocityX === 0 && player1VelocityY === 0) {
     return false
   }
@@ -91,6 +93,7 @@ function isGameOver() {
     return false
   }
 
+  // game over when player 1 hits wall
   if (
     player1X < 0 ||
     player1X === gridCount ||
@@ -101,6 +104,7 @@ function isGameOver() {
     alert("Player 2 wins")
   }
 
+  // game over when player 2 hits wall
   if (
     player2X < 0 ||
     player2X === gridCount ||
@@ -113,25 +117,29 @@ function isGameOver() {
 
   for (let i = 0; i < p1Trail.length; i++) {
     let trail1 = p1Trail[i]
+    // game over when player 1 hits its own trail
     if (trail1.x === player1X && trail1.y === player1Y) {
       gameOver = true
       alert("Player 2 wins")
       break
     }
+    // game over when player 2 hits player 1 trail
     if (trail1.x === player2X && trail1.y === player2Y) {
       gameOver = true
       alert("Player 1 wins")
       break
     }
   }
-
+  
   for (let i = 0; i < p2Trail.length; i++) {
     let trail2 = p2Trail[i]
+    // game over when player 2 hits its own trail
     if (trail2.x === player2X && trail2.y === player2Y) {
       gameOver = true
       alert("Player 1 wins")
       break
     }
+    // game over when player 1 hits player 2 trail
     if (trail2.x === player1X && trail2.y === player1Y) {
       gameOver = true
       alert("Player 2 wins")
@@ -140,6 +148,16 @@ function isGameOver() {
   }
   return gameOver
 }
+
+function bothDie () {
+    if (player1X === player2X && player1Y === player2Y) {
+        gameOver = true
+        alert("Draw")
+        
+      }
+      return
+}
+
 function clearScreen() {
   // drawing the arena
   context.fillStyle = "black"
@@ -156,6 +174,7 @@ function drawPlayer1() {
     gridSize
   )
 
+  // drawing player 1 trail
   context.fillStyle = "lightblue"
   for (let i = 0; i < p1Trail.length; i++) {
     let trail1 = p1Trail[i]
@@ -179,6 +198,7 @@ function drawPlayer2() {
     gridSize
   )
 
+  // drawing player 2 trail
   context.fillStyle = "orange"
   for (let i = 0; i < p2Trail.length; i++) {
     let trail2 = p2Trail[i]
@@ -196,6 +216,7 @@ document.body.addEventListener("keydown", player1KeyDown)
 document.body.addEventListener("keydown", player2KeyDown)
 
 function player1KeyDown(event) {
+  //input direction for player 1
   if (event.keyCode == 87 && player1VelocityY != 1) {
     player1VelocityX = 0
     player1VelocityY = -1

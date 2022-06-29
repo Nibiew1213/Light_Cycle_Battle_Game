@@ -1,16 +1,32 @@
 # Light Cycle Battle
 
-### System requirements
-1. Node.js
+## Technologies used
+1. HTML
+2. CSS
+3. JavaScript with canvas
+4. Google Fonts
 
-To start game:
-+ double click on `index.html` file
+## Game Concept
 
 
-### Takeaways
-+ canvas
-+ collision detection
-+ constructor classes
+## Approach taken
+
+
+## Method to run the game 
+The game can be played in browser here or by opening up `index.html` in the IDE of your choice.
+
+## How to play
++ Player 1 controls using 'WASD' keys
++ Player 2 controls using 'Arrow' keys
++ Click on 'Start' button to start the game
+
+
+
+## Takeaways
++ different methods of creating canvas
++ setting up collision detection
 + DOM manipulation
 + keypress logic implementation
-+ code linting
++ code linting using Prettier
+
+## Unsolved problems
