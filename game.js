@@ -1,179 +1,287 @@
-//Defining battle zone arena size
-const blockSize = 10
-const rows = 50
-const cols = 100
+const canvas = document.getElementById("arena")
+const context = canvas.getContext("2d")
+const startBtn = document.querySelector(".start")
+startBtn.addEventListener("click", restartGame)
 
-// ready player 1 starting position
-let player1X = blockSize * 4
-let player1Y = blockSize * 24
+/**
+ * Declaration of global variables
+ */
 
-// player 1 initial movement
+let speed = 15
+let gridCount = 40
+let gridSize = canvas.width / gridCount && canvas.height / gridCount
+
+/**
+ * Player starting x and y positions
+ */
+let player1X = 1 
+let player1Y = 3
+
+let player2X = 38 
+let player2Y = 36
+
+/**
+ * Player stationary before start button pushed
+ */
 let player1VelocityX = 0
 let player1VelocityY = 0
 
-// ready player 2 starting position
-let player2X = blockSize * 95
-let player2Y = blockSize * 24
-
-// player 2 initial movement
 let player2VelocityX = 0
 let player2VelocityY = 0
 
-// both player's light cycle trails
-let player1Trail = []
-let player2Trail = []
+/**
+ * Players trails starts with empty arrays
+ */
 
-// game over 
-let gameOver = false
+let p1Trail = []
+let p2Trail = [] 
 
-//initialise game battle with all functions
-window.onload = function() {
-  arena = document.getElementById("arena")
-  arena.height = rows * blockSize // setting up arena
-  arena.width = cols * blockSize // setting up arena
-  context = arena.getContext("2d") // to draw on the screen
+/**
+ * Player Classes
+ */
 
-  document.addEventListener("keydown", P1ChangeDirection) // when player1 press the keys
-  document.addEventListener("keydown", P2ChangeDirection) // when player2 press the keys
-  // update()
-setInterval(update, 5000)
+class player1Trail {
+  constructor(x, y) {
+    this.x = x
+    this.y = y
+  }
 }
 
-function update() {
-    if (gameOver) {
-        // if (confirm("Press ok to restart")) { // to refresh the game
-        //     window.location = '/'
-        // }
-        return
-    }
-    context.fillStyle = "black" // arena background color
-    context.fillRect(0, 0, arena.width, arena.height)
-    drawPlayer1()
-    drawPlayer2()
-    isGameOver()
-    console.log(player1Trail);
-}
- 
-  //--------player 1---------
-function drawPlayer1(){
-  context.fillStyle = "lightblue" // player 1 color
-  player1X = player1X + player1VelocityX * blockSize
-  player1Y = player1Y + player1VelocityY * blockSize
-  context.fillRect(player1X, player1Y, blockSize, blockSize)
-
-
-  //adding light cycle trails for player 1
-  for (let i = 0; i < player1Trail.length; i++){
-    context.fillRect(player1Trail[i][0], player1Trail[i][1], blockSize, blockSize)
+class player2Trail {
+  constructor(x, y) {
+    this.x = x
+    this.y = y
   }
-  for (let i = player1Trail.length - 1; i > 0; i--) {
-    player1Trail[i] = player1Trail[i-1]
-  }
-  if (player1Trail.length) {
-    player1Trail[0] = [player1X, player1Y]
-  }
-  player1Trail.push(player1X, player1Y)
 }
 
-
-
-
+/**
+ * Function drawGame initializes game
+ * it also stops when game is over
+ */
+function drawGame() {
+  changeP1Direction()
+  changeP2Direction()
+  let result = isGameOver()
+  if (result) {
+    return
+  }
+  clearScreen()
+  drawPlayer1()
+  drawPlayer2()
+  setTimeout(drawGame, 1000 /speed)
   
-//--------player 2---------
-function drawPlayer2(){
-  context.fillStyle = "orange" // player 2 color
-  player2X = player2X + player2VelocityX * blockSize
-  player2Y = player2Y + player2VelocityY * blockSize
-  context.fillRect(player2X, player2Y, blockSize, blockSize)
+}
 
-//adding light cycle trails for player 2
-  for (let i = 0; i < player2Trail.length; i++){
-    context.fillRect(player2Trail[i][0], player2Trail[i][1], blockSize, blockSize)
-  }
-  for (let i = player2Trail.length - 1; i > 0; i--) {
-    player2Trail[i] = player2Trail[i-1]
-  }
-  if (player2Trail.length) {
-    player2Trail[0] = [player2X, player2Y]
-  }
-  player2Trail.push(player2X, player2Y)
+/**
+ * Resets global variables to restart game
+ */
+function restartGame() {
+  player1X = 1 
+  player1Y = 3
+
+  player2X = 38 
+  player2Y = 36
+
+  p1Trail = []
+  p2Trail = []
+
+  player1VelocityX = 1
+  player2VelocityX = -1
+  player1VelocityY = 0
+  player2VelocityY = 0
+  drawGame()
+}
+
+function changeP1Direction() {
+  player1X = player1X + player1VelocityX
+  player1Y = player1Y + player1VelocityY
+}
+
+function changeP2Direction() {
+  player2X = player2X + player2VelocityX
+  player2Y = player2Y + player2VelocityY
 }
 
 
-// Game over conditions when either player hits arena wall
-function isGameOver(){
-if (player1X < 0 || player1X > cols*blockSize || player1Y < 0 || player1Y > rows*blockSize ) {
+function isGameOver() {
+  let gameOver = false
+  let isDraw = false
+  
+
+  if (player1X === player2X && player1Y === player2Y ||
+    player1X === gridCount && player2X < 0 
+    ) {   
+      isDraw = true
+      context.fillStyle = "red"
+      context.fillRect(
+        player1X * gridCount,
+        player1Y * gridCount,
+        gridSize,
+        gridSize)
+
+      gameOver = true
+      alert("Draw")   
+  }
+
+
+  // prevents game over during start of game
+  if (player1VelocityX === 0 && player1VelocityY === 0) {
+    return false
+  }
+
+  if (player2VelocityX === 0 && player2VelocityY === 0) {
+    return false
+  }
+
+  // game over when player 1 hits wall
+  if (
+    player1X < 0 ||
+    player1X === gridCount ||
+    player1Y < 0 ||
+    player1Y === gridCount
+  ) {
     gameOver = true
-    alert("Game Over Player 2 wins!")
-}
+    alert("Player 2 wins")
+  }
 
-if (player2X < 0 || player2X > cols*blockSize || player2Y < 0 || player2Y > rows*blockSize) {
+  // game over when player 2 hits wall
+  if (
+    player2X < 0 ||
+    player2X === gridCount ||
+    player2Y < 0 ||
+    player2Y === gridCount
+  ) {
     gameOver = true
-    alert("Game Over Player 1 wins!")
-}
-}
+    alert("Player 1 wins")
+  }
 
-
-// Game over conditions when either player hits trails
-for (let i = 0; i < player1Trail.length; i++) {
-    if (player1X == player1Trail[i][0] && player1Y == player1Trail[i][1]) {
+  for (let i = 0; i < p1Trail.length; i++) {
+   
+    if(!isDraw) {
+      // game over when player 1 hits its own trail
+      if (p1Trail[i].x === player1X && p1Trail[i].y === player1Y) {
         gameOver = true
-        alert("Game Over Player 2 Wins")
+        alert("Player 2 wins")
+        break
+      }
+       // game over when player 2 hits player 1 trail
+      if (p1Trail[i].x === player2X && p1Trail[i].y === player2Y) {
+          gameOver = true
+          alert("Player 1 wins")
+        break
+      }
     }
+  }
+  
+  for (let i = 0; i < p2Trail.length; i++) {
+    
+    if(!isDraw) {
+    // game over when player 2 hits its own trail
+    if (p2Trail[i].x === player2X && p2Trail[i].y === player2Y) {
+      gameOver = true
+      alert("Player 1 wins")
+      break
+    }
+    // game over when player 1 hits player 2 trail
+    if (p2Trail[i].x === player1X && p2Trail[i].y === player1Y) {
+      
+        gameOver = true
+        alert("Player 2 wins")
+      break
+    }
+  }
+  }
+  return gameOver
 }
 
 
-
-
-// for(let i = 0; i < player1Trail.length; i++) {
-//     let trail = player1Trail[i]
-//     if(player1X === trail.x && player1Y === trail.y) {
-//         gameOver = true
-//         break
-//     }
-// }
-
-
-
-
-
-function P1ChangeDirection(event) {
-    if(event.keyCode == 87 && player1VelocityY != 1) { 
-        player1VelocityX = 0
-        player1VelocityY = -1
-    }
-     else if (event.keyCode == 83 && player1VelocityY != -1) {
-        player1VelocityX = 0
-        player1VelocityY = 1
-    }
-    else if (event.keyCode == 65 && player1VelocityX != 1) {
-        player1VelocityX = -1
-        player1VelocityY = 0
-    }
-    else if (event.keyCode == 68 && player1VelocityX != -1) {
-        player1VelocityX = 1
-        player1VelocityY = 0
-    }
+// drawing the arena
+function clearScreen() {
+  context.fillStyle = "black"
+  context.fillRect(0, 0, canvas.width, canvas.height)
 }
 
+// drawing player 1 head
+function drawPlayer1() {
+  context.fillStyle = "rgb(120, 252, 252)"
+  context.fillRect(
+    player1X * gridCount,
+    player1Y * gridCount,
+    gridSize,
+    gridSize
+  )
 
-function P2ChangeDirection(e) { //input direction for player 2
-    if (e.code === "ArrowUp" && player2VelocityY != 1) {
-        player2VelocityX = 0
-        player2VelocityY = -1
-    }
-     else if (e.code === "ArrowDown" && player2VelocityY != -1) {
-        player2VelocityX = 0
-        player2VelocityY = 1
-    }
-    else if (e.code === "ArrowLeft" && player2VelocityX != 1) {
-        player2VelocityX = -1
-        player2VelocityY = 0
-    }
-    else if (e.code === "ArrowRight" && player2VelocityX != -1) {
-        player2VelocityX = 1
-        player2VelocityY = 0
-    }
+  // drawing player 1 trail
+  context.fillStyle = "lightblue"
+  for (let i = 0; i < p1Trail.length; i++) {
+    context.fillRect(
+      p1Trail[i].x * gridCount,
+      p1Trail[i].y * gridCount,
+      gridSize,
+      gridSize
+    )
+  }
+  p1Trail.push(new player1Trail(player1X, player1Y))
 }
 
+// drawing player 2 head
+function drawPlayer2() {
+  context.fillStyle = "rgb(253, 195, 137)"
+  context.fillRect(
+    player2X * gridCount,
+    player2Y * gridCount,
+    gridSize,
+    gridSize
+  )
 
+  // drawing player 2 trail
+  context.fillStyle = "orange"
+  for (let i = 0; i < p2Trail.length; i++) {
+    context.fillRect(
+    p2Trail[i].x * gridCount,
+    p2Trail[i].y * gridCount,
+    gridSize,
+    gridSize
+    )
+  }
+  p2Trail.push(new player2Trail(player2X, player2Y))
+}
+
+document.body.addEventListener("keydown", player1KeyDown)
+document.body.addEventListener("keydown", player2KeyDown)
+
+//input direction for player 1
+function player1KeyDown(event) {
+  if (event.keyCode == 87 && player1VelocityY != 1) {
+    player1VelocityX = 0
+    player1VelocityY = -1
+  } else if (event.keyCode == 83 && player1VelocityY != -1) {
+    player1VelocityX = 0
+    player1VelocityY = 1
+  } else if (event.keyCode == 65 && player1VelocityX != 1) {
+    player1VelocityX = -1
+    player1VelocityY = 0
+  } else if (event.keyCode == 68 && player1VelocityX != -1) {
+    player1VelocityX = 1
+    player1VelocityY = 0
+  }
+}
+
+//input direction for player 2
+function player2KeyDown(e) {
+  if (e.code === "ArrowUp" && player2VelocityY != 1) {
+    player2VelocityX = 0
+    player2VelocityY = -1
+  } else if (e.code === "ArrowDown" && player2VelocityY != -1) {
+    player2VelocityX = 0
+    player2VelocityY = 1
+  } else if (e.code === "ArrowLeft" && player2VelocityX != 1) {
+    player2VelocityX = -1
+    player2VelocityY = 0
+  } else if (e.code === "ArrowRight" && player2VelocityX != -1) {
+    player2VelocityX = 1
+    player2VelocityY = 0
+  }
+}
+
+drawGame()

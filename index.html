@@ -1,15 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link href="./style.css" rel="stylesheet"/>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Light_Cycle_Battle</title>
-</head>
-<body>
-    <h1>Light Cycle Battle</h1>
-    <canvas id = "arena"></canvas>
-    <script src = "game.js"></script>
-</body>
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Catamaran:wght@100&family=Orbitron&display=swap"
+      rel="stylesheet"
+    />
+    <link href="./style.css" rel="stylesheet" />
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Light_Cycle_Battle_V2</title>
+  </head>
+  <body>
+    <h1>Tron Light Cycle Battle</h1>
+
+    <div class="container">
+      <div class="player-one-controls">
+        <img src="./resources/WASD-keys.png" width="300" height="150" />
+        <div id="playerOne">Player 1 Controls</div>
+      </div>
+
+      <canvas id="arena" width="1600" height="1600"></canvas>
+
+      <div class="player-two-controls">
+        <img src="./resources/Arrow-keys.png" width="300" height="150" />
+        <div id="playerTwo">Player 2 Controls</div>
+      </div>
+    </div>
+
+    <button class="start">Start</button>
+
+    <script src="game.js"></script>
+  </body>
 </html>

@@ -19,6 +19,7 @@ The game can be played in browser here or by opening up `index.html` in the IDE 
 + Player 1 controls using 'WASD' keys
 + Player 2 controls using 'Arrow' keys
 + Click on 'Start' button to start the game
++ Screen size adjustment via zooming may be required
 
 
 
@@ -29,4 +30,8 @@ The game can be played in browser here or by opening up `index.html` in the IDE 
 + keypress logic implementation
 + code linting using Prettier
 
-## Unsolved problems
+## Future improvements
++ Scoreboard / Player Lives
++ Create AI for single player
++ Sprite Animations
++ Sound effects and music
